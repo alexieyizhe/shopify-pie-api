@@ -22,7 +22,7 @@ let db = firebase.firestore();
 let productsCollection = db.collection('products');
 let cartsCollection = db.collection('carts');
 
-// Firebase helpers
+/* ----------- FIREBASE DB HELPErS ----------- */
 const getSingleProduct = (productId) => {
   console.log('getting product');
   return productsCollection
@@ -128,7 +128,6 @@ app.use(cors({ origin: true }));
 app.use(bodyParser.json()); // Parse request body contents as json
 
 
-
 /* ----------- ENDPOINTS FOR API ----------- */
 // GET ALL PRODUCTS
 app.get('/products', (req, res) => {
@@ -160,17 +159,19 @@ app.get('/product/:productId', (req, res) => {
 
 
 // PURCHASE A PRODUCT (by ID)
-app.patch('/product/:productId/purchase', (req, res) => {
-  const { productId } = req.params;
-  purchaseSingleProduct(productId)
-    .then(purchaseResults => {
-      res.status(200).send(purchaseResults.msg);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(200).send('An error occurred.');
-    });
-});
+// This is disabled since the cart feature is added.
+// To purchase an item, you must first add it to a cart and then checkout
+// app.patch('/product/:productId/purchase', (req, res) => {
+//   const { productId } = req.params;
+//   purchaseSingleProduct(productId)
+//     .then(purchaseResults => {
+//       res.status(200).send(purchaseResults.msg);
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       res.status(200).send('An error occurred.');
+//     });
+// });
 
 
 // GET A SPECIFIC CART (by ID)
@@ -270,11 +271,10 @@ app.patch('/cart/:cartId/remove/:productId', (req, res) => {
       }
     })
     .catch(err => console.log(err));
-
 });
 
 
-// ADD A CART
+// CREATE A CART
 app.post('/carts', (req, res) => {
   cartsCollection
     .add({ products: [], total: 0 })
